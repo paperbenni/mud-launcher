@@ -1,19 +1,11 @@
 #!/usr/bin/env bash
 
-pb() {
-    if [ -z "$@" ]; then
-        echo "usage: pb bashfile"
-    fi
-    for FILE in "$@"; do
-        curl "https://raw.githubusercontent.com/paperbenni/bash/master/$1" >temp.sh
-        source temp.sh
-        rm temp.sh
-    done
-}
+source <(curl -s https://raw.githubusercontent.com/paperbenni/bash/master/import.sh)
 
 pb unpack/unpack.sh
 
 cd "$HOME"
+rm -rf mud
 mkdir mud
 cd mud
 if ! fzf --version || ! ./fzf --version; then
@@ -27,10 +19,15 @@ rm tt++
 wget http://tintin.surge.sh/tt++
 chmod +x tt++
 
-curl https://www.mudconnect.com/cgi-bin/search.cgi?mode=tmc_biglist | grep -Eo "(http|telnet)://[a-zA-Z0-9./?=_-]*" | sort | uniq >temp.txt
+curl https://www.mudconnect.com/cgi-bin/search.cgi?mode=tmc_biglist | grep -Eo "(telnet)://[a-zA-Z0-9./?=_-]*" | sort | uniq >temp.txt
 
 while read p; do
     NAME=${p#telnet://}
+    if echo "$NAME" | grep -w '[0-9]*'; then
+      echo "skipping"
+      continue
+
+    fi
     echo "$NAME" >>mudlist.txt
 done <temp.txt
 
