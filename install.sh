@@ -27,7 +27,7 @@ while read p; do
     NOPREFIX=${p#telnet://}
     NAME=${NOPREFIX%\'}
     if echo "$NAME" | grep -E '^[0-9.:]+$' >/dev/null; then
-        echo "skipping"
+        echo "skipping ip adress"
         continue
     else
         echo "adding game $NAME"
