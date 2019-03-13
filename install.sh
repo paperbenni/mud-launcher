@@ -9,26 +9,28 @@ rm -rf mud
 mkdir mud
 cd mud
 if ! fzf --version || ! ./fzf --version; then
-    wget https://github.com/junegunn/fzf-bin/releases/download/0.17.5/fzf-0.17.5-linux_amd64.tgz
+    wget https://github.com/junegunn/fzf-bin/releases/download/0.17.5/fzf-0.17.5-linux_amd64.tgz -q --show-progress
     unpack *.tgz
     rm *.tgz
     chmod +x fzf
 fi
 
 rm tt++
-wget http://tintin.surge.sh/tt++
+wget http://tintin.surge.sh/tt++ -q --show-progress
 chmod +x tt++
 
-curl https://www.mudconnect.com/cgi-bin/search.cgi?mode=tmc_biglist >download.txt
+echo "looking for games..."
+curl -s https://www.mudconnect.com/cgi-bin/search.cgi?mode=tmc_biglist >download.txt
 grep -oP 'telnet.?://\S+' download.txt >temp.txt
 
 while read p; do
     NOPREFIX=${p#telnet://}
     NAME=${NOPREFIX%\'}
-    if echo "$NAME" | grep -E '^[0-9.:]+$'; then
+    if echo "$NAME" | grep -E '^[0-9.:]+$' >/dev/null; then
         echo "skipping"
         continue
-
+    else
+        echo "adding game $NAME"
     fi
     echo "$NAME" >>mudlist.txt
 done <temp.txt
