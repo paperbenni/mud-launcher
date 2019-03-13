@@ -19,13 +19,15 @@ rm tt++
 wget http://tintin.surge.sh/tt++
 chmod +x tt++
 
-curl https://www.mudconnect.com/cgi-bin/search.cgi?mode=tmc_biglist | grep -Eo "(telnet)://[a-zA-Z0-9./?=_-]*" | sort | uniq >temp.txt
+curl https://www.mudconnect.com/cgi-bin/search.cgi?mode=tmc_biglist >download.txt
+grep -oP 'telnet.?://\S+' download.txt >temp.txt
 
 while read p; do
-    NAME=${p#telnet://}
-    if echo "$NAME" | grep -w '[0-9]*'; then
-      echo "skipping"
-      continue
+    NOPREFIX=${p#telnet://}
+    NAME=${NOPREFIX%\'}
+    if echo "$NAME" | grep -E '^[0-9.:]+$'; then
+        echo "skipping"
+        continue
 
     fi
     echo "$NAME" >>mudlist.txt
