@@ -4,6 +4,11 @@ source <(curl -s https://raw.githubusercontent.com/paperbenni/bash/master/import
 
 pb unpack/unpack.sh
 
+if ! dialog --version &>/dev/null; then
+    pb install/install.sh
+    sudo pinstall dialog grep
+fi
+
 cd "$HOME"
 rm -rf mud
 mkdir mud

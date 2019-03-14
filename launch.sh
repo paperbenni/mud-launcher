@@ -18,8 +18,9 @@ fi
 mkdir tin
 cd tin
 
-if ! [ -e "$MUDLINK.tin" ]; then
-    echo "#session ${MUDLINK%.*} ${MUDLINK%%:*} ${MUDLINK##*:}" >"$MUDLINK".tin
+TINFILE="${MUDLINK%%:*}.tin"
+if ! [ -e "$TINFILE" ]; then
+    echo "#session ${TINFILE%.*} ${MUDLINK%%:*} ${MUDLINK##*:}" >"$TINFILE"
     echo "creating tintin profile"
     dialog --title "setup" \
         --backtitle "You are joining this MUD for the first time on this machine." \
@@ -27,8 +28,8 @@ if ! [ -e "$MUDLINK.tin" ]; then
     EXIT="$?"
     clear
     if [ "$EXIT" = "0" ]; then
-        nvim "$MUDLINK.tin" || vi "$MUDLINK.tin"
+        nvim "$TINFILE" || vi "$TINFILE"
     fi
 fi
 
-../tt++ "$MUDLINK.tin"
+../tt++ "$TINFILE"
