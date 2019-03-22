@@ -41,3 +41,4 @@ while read p; do
 done <temp.txt
 
 rm temp.txt
+curl -s https://raw.githubusercontent.com/paperbenni/mud-launcher/master/muds.txt >> mudlist.txt
