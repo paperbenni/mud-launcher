@@ -22,7 +22,7 @@ TINFILE="${MUDLINK%%:*}.tin"
 if ! [ -e "$TINFILE" ]; then
     echo "creating tintin profile"
     echo "#session ${TINFILE%.*} ${MUDLINK%%:*} ${MUDLINK##*:}" >"$TINFILE"
-    echo "#log append $TINFILE.mud"
+    echo "#log append $TINFILE.mud" >> "$TINFILE"
     dialog --title "setup" \
         --backtitle "You are joining this MUD for the first time on this machine." \
         --yesno "Do you want to edit the startup commands? (like login commands)" 7 60
@@ -34,4 +34,3 @@ if ! [ -e "$TINFILE" ]; then
 fi
 
 ../tt++ "$TINFILE"
-rm "$TINFILE.mud"
