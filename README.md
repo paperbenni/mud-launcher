@@ -6,5 +6,5 @@ launch your favorite muds from one place
 paste this into a terminal
 
 ```sh
-curl https://raw.githubusercontent.com/paperbenni/mud-launcher/master/launch.sh | bash
+mud || curl https://raw.githubusercontent.com/paperbenni/mud-launcher/master/launch.sh | bash
 ```

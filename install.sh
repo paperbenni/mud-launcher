@@ -1,28 +1,31 @@
 #!/usr/bin/env bash
 
-source <(curl -s https://raw.githubusercontent.com/paperbenni/bash/master/import.sh)
+cd /bin
+sudo curl https://raw.githubusercontent.com/paperbenni/mud-launcher/master/launch.sh >mud
+sudo chmod +x mud
+cd
 
-pb unpack/unpack.sh
-
-if ! dialog --version &>/dev/null; then
+if ! command -v dialog &>/dev/null; then
     pb install/install.sh
     sudo pinstall dialog grep
 fi
 
 cd "$HOME"
 rm -rf mud
-mkdir mud
-cd mud
-if ! fzf --version || ! ./fzf --version; then
-    wget https://github.com/junegunn/fzf-bin/releases/download/0.17.5/fzf-0.17.5-linux_amd64.tgz -q --show-progress
-    unpack *.tgz
-    rm *.tgz
-    chmod +x fzf
+if ! command -v fzf; then
+    git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+    ~/.fzf/install
 fi
 
-rm tt++
-wget http://tintin.surge.sh/tt++ -q --show-progress
-chmod +x tt++
+if ! command -v tt++; then
+    cd /bin
+    sudo wget tintin.surge.sh/tt++
+    sudo chmod +x tt++
+fi
+
+cd
+mkdir mud
+cd mud
 
 echo "looking for games..."
 curl -s https://www.mudconnect.com/cgi-bin/search.cgi?mode=tmc_biglist >download.txt
@@ -41,4 +44,4 @@ while read p; do
 done <temp.txt
 
 rm temp.txt
-curl -s https://raw.githubusercontent.com/paperbenni/mud-launcher/master/muds.txt >> mudlist.txt
+curl -s https://raw.githubusercontent.com/paperbenni/mud-launcher/master/muds.txt >>mudlist.txt

@@ -1,28 +1,29 @@
 #!/usr/bin/env bash
+echo "mud launcher started"
 
-if ! [ -e ~/mud ]; then
+cd ~/
+
+if ! [ -e mud ]; then
     curl https://raw.githubusercontent.com/paperbenni/mud-launcher/master/install.sh | bash
 fi
 
-fzf() {
-    ~/mud/fzf "$@"
-}
+cd mud
 
-cd "$HOME/mud"
-
-MUDLINK=$(cat mudlist.txt | shuf | fzf)
+#select the game with format gameurl:port
+MUDLINK=$(shuf <mudlist.txt | fzf)
 if [ -z "$MUDLINK" ]; then
     echo "no game selected"
     exit
 fi
+
 mkdir tin
 cd tin
 
-TINFILE="${MUDLINK%%:*}.tin"
-if ! [ -e "$TINFILE" ]; then
+TINNAME="${MUDLINK%%:*}.tin"
+if ! [ -e "$TINNAME.tin" ]; then
     echo "creating tintin profile"
-    echo "#session ${TINFILE%.*} ${MUDLINK%%:*} ${MUDLINK##*:}" >"$TINFILE"
-    echo "#log append $TINFILE.mud" >> "$TINFILE"
+    echo "#session ${TINNAME%%.*} ${MUDLINK%%:*} ${MUDLINK##*:}" >"$TINNAME.tin"
+    echo "#log append $TINNAME.mud" >>"$TINNAME.tin"
     dialog --title "setup" \
         --backtitle "You are joining this MUD for the first time on this machine." \
         --yesno "Do you want to edit the startup commands? (like login commands)" 7 60
@@ -33,4 +34,4 @@ if ! [ -e "$TINFILE" ]; then
     fi
 fi
 
-../tt++ "$TINFILE"
+tt++ "$TINFILE"
