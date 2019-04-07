@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-cd /bin
-sudo curl https://raw.githubusercontent.com/paperbenni/mud-launcher/master/launch.sh >mud
-sudo chmod +x mud
 cd
+curl https://raw.githubusercontent.com/paperbenni/mud-launcher/master/launch.sh >mudlauncher
+sudo mv mudlauncher /bin/
+sudo chmod +x /bin/mudlauncher
 
 if ! command -v dialog &>/dev/null; then
     pb install/install.sh

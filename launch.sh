@@ -11,6 +11,7 @@ cd mud
 
 #select the game with format gameurl:port
 MUDLINK=$(shuf <mudlist.txt | fzf)
+
 if [ -z "$MUDLINK" ]; then
     echo "no game selected"
     exit
@@ -19,7 +20,7 @@ fi
 mkdir tin
 cd tin
 
-TINNAME="${MUDLINK%%:*}.tin"
+TINNAME="${MUDLINK%%:*}"
 if ! [ -e "$TINNAME.tin" ]; then
     echo "creating tintin profile"
     echo "#session ${TINNAME%%.*} ${MUDLINK%%:*} ${MUDLINK##*:}" >"$TINNAME.tin"
@@ -30,8 +31,8 @@ if ! [ -e "$TINNAME.tin" ]; then
     EXIT="$?"
     clear
     if [ "$EXIT" = "0" ]; then
-        nvim "$TINFILE" || vi "$TINFILE"
+        nvim "$TINNAME.tin" || vi "$TINNAME.tin"
     fi
 fi
 
-tt++ "$TINFILE"
+tt++ "$TINNAME.tin"
