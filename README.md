@@ -6,5 +6,12 @@ launch your favorite muds from one place
 paste this into a terminal
 
 ```sh
-mud || curl https://raw.githubusercontent.com/paperbenni/mud-launcher/master/launch.sh | bash
+mudlauncher || (curl https://raw.githubusercontent.com/paperbenni/mud-launcher/master/install.sh | bash && mudlauncher)
+```
+
+# Uninstallation
+
+```sh
+curl https://raw.githubusercontent.com/paperbenni/mud-launcher/master/uninstall.sh | bash
+
 ```
