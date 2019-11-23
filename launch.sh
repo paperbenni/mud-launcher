@@ -9,6 +9,14 @@ fi
 
 cd mud
 
+# scrape list of muds
+if ! [ -e mudlist.txt ]; then
+    grep -o 'telnet://.*:[0-9]*'"'" <mud.html | grep -o '//.*' | \
+    grep -o '[^'"'"'/]*' | grep -Ev '^[0-9:]*$' >mudlist.txt
+
+    curl -s "https://raw.githubusercontent.com/paperbenni/mud-launcher/master/muds.txt" >>mudlist.txt
+fi
+
 #select the game with format gameurl:port
 MUDLINK=$(shuf <mudlist.txt | fzf)
 
