@@ -1,46 +1,42 @@
-#!/usr/bin/env bash
-echo "mud launcher started"
+#!/bin/bash
 
-cd ~/
+cd
 
-if ! [ -e mud ]; then
-    curl https://raw.githubusercontent.com/paperbenni/mud-launcher/master/install.sh | bash
-fi
-
-cd mud
-
-# scrape list of muds
-if ! [ -e mudlist.txt ]; then
-    grep -o 'telnet://.*:[0-9]*'"'" <mud.html | grep -o '//.*' | \
-    grep -o '[^'"'"'/]*' | grep -Ev '^[0-9:]*$' >mudlist.txt
-
-    curl -s "https://raw.githubusercontent.com/paperbenni/mud-launcher/master/muds.txt" >>mudlist.txt
-fi
-
-#select the game with format gameurl:port
-MUDLINK=$(shuf <mudlist.txt | fzf)
-
-if [ -z "$MUDLINK" ]; then
-    echo "no game selected"
+if ! ping -c 1 google.com &>/dev/null; then
+    echo "an internet connection is required"
     exit
 fi
 
-mkdir tin
-cd tin
+if ! [ -e .cache/muds/muds.txt ]; then
+    echo "getting list of muds"
+    mkdir -p .cache/muds
+    cd .cache/muds
+    curl -s http://www.mudconnect.com/cgi-bin/search.cgi?mode=tmc_biglist |
+        grep -o '=telnet://.*:[0-9]*'"'" |
+        sed 's~.*://\(.*:[0-9]*\).*~\1~g' >muds.txt
+    curl -s https://raw.githubusercontent.com/paperbenni/mud-launcher/master/muds.txt >>muds.txt
+    cd
+fi
 
-TINNAME="${MUDLINK%%:*}"
-if ! [ -e "$TINNAME.tin" ]; then
-    echo "creating tintin profile"
-    echo "#session ${TINNAME%%.*} ${MUDLINK%%:*} ${MUDLINK##*:}" >"$TINNAME.tin"
-    echo "#log append $TINNAME.mud" >>"$TINNAME.tin"
-    dialog --title "setup" \
-        --backtitle "You are joining this MUD for the first time on this machine." \
-        --yesno "Do you want to edit the startup commands? (like login commands)" 7 60
-    EXIT="$?"
-    clear
-    if [ "$EXIT" = "0" ]; then
-        nvim "$TINNAME.tin" || vi "$TINNAME.tin"
+if ! command -v tt++ &>/dev/null; then
+    echo "tintin not found"
+    if command -v pacman; then
+        sudo pacman -S --noconfirm tintin
+    elif command -v apt; then
+        sudo apt install -y tintin++
     fi
 fi
 
-tt++ "$TINNAME.tin"
+if ! command -v fzf &>/dev/null; then
+    echo "tintin not found"
+    if command -v pacman; then
+        sudo pacman -S --noconfirm fzf
+    elif command -v apt; then
+        sudo apt install -y fzf
+    fi
+fi
+
+MUD=$(cat .cache/muds/muds.txt | fzf)
+MUDNAME=$(grep '^[^:]*' <<<$MUD)
+MUDPORT=$(grep '[^:]*$')
+tt++ $MUDNAME $MUDNAME $MUDPORT
