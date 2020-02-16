@@ -8,6 +8,26 @@ if ! ping -c 1 google.com &>/dev/null; then
 fi
 
 if ! [ -e .cache/muds/muds.txt ]; then
+    while true; do
+        read -p "would you like to make mud a permanent command on your system?" yn
+        case $yn in
+        [Yy]*)
+            if [ -e /usr/local/bin/mud ]; then
+                echo "conflicting file /usr/local/bin/mud found"
+                break
+            fi
+
+            curl -s 'https://raw.githubusercontent.com/paperbenni/mud-launcher/master/launch.sh' |
+                sudo tee /usr/local/bin/mud
+            sudo chmod 755 /usr/local/bin/mud
+            
+            break
+            ;;
+        [Nn]*) echo "no installation" ;;
+        *) echo "Please answer yes or no." ;;
+        esac
+    done
+    
     echo "getting list of muds"
     mkdir -p .cache/muds
     cd .cache/muds
