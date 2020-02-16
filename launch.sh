@@ -12,7 +12,7 @@ if ! [ -e .cache/muds/muds.txt ]; then
         read -p "would you like to make mud a permanent command on your system?" yn
         case $yn in
         [Yy]*)
-            if [ -e /usr/local/bin/mud ]; then
+            if [ -e /usr/local/bin/mud ] && ! grep -q 'paperbenni' /usr/local/bin/mud; then
                 echo "conflicting file /usr/local/bin/mud found"
                 break
             fi
@@ -20,14 +20,14 @@ if ! [ -e .cache/muds/muds.txt ]; then
             curl -s 'https://raw.githubusercontent.com/paperbenni/mud-launcher/master/launch.sh' |
                 sudo tee /usr/local/bin/mud
             sudo chmod 755 /usr/local/bin/mud
-            
+
             break
             ;;
         [Nn]*) echo "no installation" ;;
         *) echo "Please answer yes or no." ;;
         esac
     done
-    
+
     echo "getting list of muds"
     mkdir -p .cache/muds
     cd .cache/muds
@@ -57,6 +57,8 @@ if ! command -v fzf &>/dev/null; then
 fi
 
 MUD=$(cat .cache/muds/muds.txt | fzf)
+
+grep -q '....' <<<$MUD || exit
 
 MUDNAME=$(grep -o '^[^:]*' <<<$MUD)
 MUDPORT=$(grep -o '[^:]*$' <<<$MUD)
