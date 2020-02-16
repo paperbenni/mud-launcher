@@ -37,6 +37,10 @@ if ! command -v fzf &>/dev/null; then
 fi
 
 MUD=$(cat .cache/muds/muds.txt | fzf)
-MUDNAME=$(grep '^[^:]*' <<<$MUD)
-MUDPORT=$(grep '[^:]*$')
-tt++ $MUDNAME $MUDNAME $MUDPORT
+
+MUDNAME=$(grep -o '^[^:]*' <<<$MUD)
+MUDPORT=$(grep -o '[^:]*$' <<<$MUD)
+
+echo "name $MUDNAME port $MUDPORT"
+echo "#session $MUDNAME $MUDNAME $MUDPORT" >/tmp/mud.tin
+tt++ /tmp/mud.tin
